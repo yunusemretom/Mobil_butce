@@ -5,6 +5,7 @@ import {
 import {
   Home, BarChart3, Calculator, User, Plus, Trash2, ArrowDownLeft, ArrowUpRight,
 } from "lucide-react";
+import { Preferences } from "@capacitor/preferences";
 
 /*
   Bütçe — offline React uygulaması
@@ -17,11 +18,12 @@ import {
 // ---- Kalıcı depolama yardımcıları ----------------------------------------
 // Capacitor varsa native Preferences, yoksa localStorage kullanır.
 const STORE_KEY = "butce_tx_v1";
+const isNative = () => !!(window.Capacitor?.isNativePlatform?.());
 
 async function loadTx() {
   try {
-    if (window.Capacitor?.Plugins?.Preferences) {
-      const { value } = await window.Capacitor.Plugins.Preferences.get({ key: STORE_KEY });
+    if (isNative()) {
+      const { value } = await Preferences.get({ key: STORE_KEY });
       return value ? JSON.parse(value) : null;
     }
     const raw = localStorage.getItem(STORE_KEY);
@@ -33,8 +35,8 @@ async function loadTx() {
 async function saveTx(list) {
   const data = JSON.stringify(list);
   try {
-    if (window.Capacitor?.Plugins?.Preferences) {
-      await window.Capacitor.Plugins.Preferences.set({ key: STORE_KEY, value: data });
+    if (isNative()) {
+      await Preferences.set({ key: STORE_KEY, value: data });
       return;
     }
     localStorage.setItem(STORE_KEY, data);
