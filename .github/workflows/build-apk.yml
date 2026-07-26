@@ -33,16 +33,11 @@ jobs:
       - name: Capacitor sync
         run: npx cap sync android
 
-      - name: Gradle wrapper indir (dogru surum)
-        run: |
-          cd android
-          gradle wrapper --gradle-version 8.11.1 --distribution-type all
-
       - name: APK derle
         run: |
           cd android
           chmod +x ./gradlew
-          ./gradlew assembleDebug
+          ./gradlew assembleDebug --no-daemon
 
       - name: APK'yi yukle
         uses: actions/upload-artifact@v4
